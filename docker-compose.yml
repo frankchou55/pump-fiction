@@ -1,0 +1,6 @@
+services:
+  kafka:                      # service name; other containers reach it by this name
+    image: apache/kafka:4.1.0 # look up the current 4.x tag on Docker Hub
+    container_name: kafka     # optional, just a friendlier name in `docker ps`
+    ports:
+      - "9092:9092"           # host:container, for Kafka's client port

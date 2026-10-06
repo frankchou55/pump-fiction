@@ -1,3 +1,13 @@
 spring:
   application:
     name: ingest
+  kafka:
+    bootstrap-servers: localhost:9092
+
+pumpfiction:
+  binance:
+    stream-url: wss://stream.binance.us:9443/stream
+    symbols:
+      - btcusdt
+      - ethusdt
+      - solusdt
