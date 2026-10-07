@@ -3,7 +3,6 @@ package pump.fiction.ingest.binance;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.json.JsonMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -18,7 +17,12 @@ public class AggTradeParser {
     private static final Logger log = LoggerFactory.getLogger(AggTradeParser.class);
 
     // One mapper, reused for every message: creating mappers is expensive
-    private final ObjectMapper mapper = JsonMapper.builder().build();
+    private final ObjectMapper mapper;
+
+    public AggTradeParser(ObjectMapper mapper)
+    {
+        this.mapper = mapper;
+    }
 
     /**
      * Parses one combined-stream message: {"stream": "...", "data": {...}}.

@@ -1,5 +1,7 @@
 package pump.fiction.ingest.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.math.BigDecimal;
 
 /**
@@ -11,8 +13,8 @@ public record AggTrade(
         long aggTradeId,      // Binance "a": consecutive per symbol, used for gap detection
         long firstTradeId,    // Binance "f"
         long lastTradeId,     // Binance "l"
-        BigDecimal price,     // Binance "p" (string -> exact decimal)
-        BigDecimal quantity,  // Binance "q"
+        @JsonFormat(shape = JsonFormat.Shape.STRING) BigDecimal price,     // Binance "p" (string -> exact decimal)
+        @JsonFormat(shape = JsonFormat.Shape.STRING) BigDecimal quantity,  // Binance "q"
         Side aggressor,       // derived from Binance "m"
         long tradeTime,       // Binance "T": when it happened; windows use this
         long eventTime,       // Binance "E": when Binance sent it

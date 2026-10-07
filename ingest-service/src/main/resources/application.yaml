@@ -5,6 +5,14 @@ spring:
     name: ingest
   kafka:
     bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all                 # wait until the broker has safely stored it
+      compression-type: lz4     # trades are repetitive JSON, so this compresses well
+      properties:
+        linger.ms: 20           # wait up to 20ms to fill a batch: better throughput
+        max.block.ms: 5000
 
 pumpfiction:
   binance:

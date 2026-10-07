@@ -7,6 +7,7 @@ import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import pump.fiction.ingest.config.BinanceProperties;
+import pump.fiction.ingest.kafka.TradePublisher;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -22,6 +23,7 @@ public class BinanceStreamClient implements WebSocket.Listener {
 
     private final BinanceProperties props;
     private final AggTradeParser parser;
+    private final TradePublisher publisher;
     private final HttpClient http = HttpClient.newHttpClient();
 
     // Collects a message that arrives in several pieces (see onText).
@@ -30,9 +32,10 @@ public class BinanceStreamClient implements WebSocket.Listener {
 
     private volatile WebSocket webSocket;
 
-    public BinanceStreamClient(BinanceProperties props, AggTradeParser parser) {
+    public BinanceStreamClient(BinanceProperties props, AggTradeParser parser, TradePublisher publisher) {
         this.props = props;
         this.parser = parser;
+        this.publisher = publisher;
     }
 
     /** Opens the connection once the app has fully started. */
@@ -82,9 +85,7 @@ public class BinanceStreamClient implements WebSocket.Listener {
     }
 
     private void handleMessage(String json, long ingestTime) {
-        parser.parse(json, ingestTime)
-                .ifPresent(trade -> log.info("{} | notional={} latency={}ms",
-                        trade, trade.notional(), trade.feedLatencyMs()));
+        parser.parse(json, ingestTime).ifPresent(publisher::publish);
     }
 
     @Override
